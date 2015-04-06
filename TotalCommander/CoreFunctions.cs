@@ -31,30 +31,24 @@ namespace TotalCommander
             return file.Length;
         }
 
-        public static void DirectoryCopy(string sourceDirName, string destDirName) 
+        public static void DirectoryCopy(string sourceDirectoryPath, string targetDirectoryPath) 
         {
-            // Get the subdirectories for the specified directory.
-            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-            DirectoryInfo[] dirs = dir.GetDirectories();
+            DirectoryInfo dir = new DirectoryInfo(sourceDirectoryPath);
 
-            // If the destination directory doesn't exist, create it. 
-            if (!Directory.Exists(destDirName))
+            if (!Directory.Exists(targetDirectoryPath))
             {
-                Directory.CreateDirectory(destDirName);
+                Directory.CreateDirectory(targetDirectoryPath);
             }
 
-            // Get the files in the directory and copy them to the new location.
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
+            foreach (FileInfo file in dir.GetFiles())
             {
-                string target = Path.Combine(destDirName, file.Name);
+                string target = Path.Combine(targetDirectoryPath, file.Name);
                 FileCopy(file.FullName, target);
             }
 
-            // If copying subdirectories, copy them and their contents to new location.
-            foreach (DirectoryInfo subdir in dirs)
+            foreach (DirectoryInfo subdir in dir.GetDirectories())
             {
-                string target = Path.Combine(destDirName, subdir.Name);
+                string target = Path.Combine(targetDirectoryPath, subdir.Name);
                 DirectoryCopy(subdir.FullName, target);
             }
         }
