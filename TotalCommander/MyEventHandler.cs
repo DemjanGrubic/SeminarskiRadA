@@ -12,183 +12,138 @@ namespace TotalCommander
     {
         public static void Copy(object obj = null)
         {
-            string errorMessage = string.Empty;
+            List<Exception> exceptions = new List<Exception>();
 
             string target = MainWindow.directoryListNotFocused.DirectoryPath;
 
             List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
             foreach (var selectedItem in selectedItems)
             {
-                try
+                if (selectedItem is DirectoryInfo)
                 {
-                    if (selectedItem is DirectoryInfo)
-                    {
-                        CoreFunctions.DirectoryCopy(selectedItem.FullName, Path.Combine(target, selectedItem.Name));
-                    }
-                    else
-                    {
-                        CoreFunctions.FileCopy(selectedItem.FullName, Path.Combine(target, selectedItem.Name));
-                    }
+                    CoreFunctions.DirectoryCopy(selectedItem.FullName, Path.Combine(target, selectedItem.Name), exceptions);
                 }
-                catch (Exception e)
+                else
                 {
-                    errorMessage += "\n" + e.Message;
+                    CoreFunctions.FileCopy(selectedItem.FullName, Path.Combine(target, selectedItem.Name), exceptions);
                 }
             }
 
             MainWindow.directoryListNotFocused.Refresh();
 
-            if (!errorMessage.Equals(string.Empty))
-            {
-                MessageBox.Show(errorMessage);
-            }
+            ShowExceptions(exceptions);
         }
 
         public static void Delete(object obj = null)
         {
-            string errorMessage = string.Empty;
+            List<Exception> exceptions = new List<Exception>();
 
             List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
             foreach (var selectedItem in selectedItems)
             {
-                try
+                if (selectedItem is DirectoryInfo)
                 {
-                    if (selectedItem is DirectoryInfo)
-                    {
-                        CoreFunctions.DirectoryDelete(selectedItem.FullName);
-                    }
-                    else
-                    {
-                        CoreFunctions.FileDelete(selectedItem.FullName);
-                    }
+                    CoreFunctions.DirectoryDelete(selectedItem.FullName, exceptions);
                 }
-                catch (Exception e)
+                else
                 {
-                    errorMessage += "\n" + e.Message;
+                    CoreFunctions.FileDelete(selectedItem.FullName, exceptions);
                 }
             }
 
             MainWindow.directoryListFocused.Refresh();
 
-            if (!errorMessage.Equals(string.Empty))
-            {
-                MessageBox.Show(errorMessage);
-            }
+            ShowExceptions(exceptions);
         }
 
         public static void Move(object obj = null)
         {
-            string errorMessage = string.Empty;
+            List<Exception> exceptions = new List<Exception>();
 
             string target = MainWindow.directoryListNotFocused.DirectoryPath;
 
             List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
             foreach (var selectedItem in selectedItems)
             {
-                try
+                if (selectedItem is DirectoryInfo)
                 {
-                    if (selectedItem is DirectoryInfo)
-                    {
-                        CoreFunctions.DirectoryMove(selectedItem.FullName, Path.Combine(target, selectedItem.Name));
-                    }
-                    else
-                    {
-                        CoreFunctions.FileMove(selectedItem.FullName, Path.Combine(target, selectedItem.Name));
-                    }
+                    CoreFunctions.DirectoryMove(selectedItem.FullName, Path.Combine(target, selectedItem.Name), exceptions);
                 }
-                catch (Exception e)
+                else
                 {
-                    errorMessage += "\n" + e.Message;
+                    CoreFunctions.FileMove(selectedItem.FullName, Path.Combine(target, selectedItem.Name), exceptions);
                 }
             }
 
             MainWindow.directoryListFocused.Refresh();
             MainWindow.directoryListNotFocused.Refresh();
 
-            if (!errorMessage.Equals(string.Empty))
-            {
-                MessageBox.Show(errorMessage);
-            }
+            ShowExceptions(exceptions);
         }
 
         public static void Enter()
         {
-            try
+            List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
+            if (selectedItems.Count == 1)
             {
-                List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
-                if (selectedItems.Count == 1)
+                string source = MainWindow.directoryListFocused.DirectoryPath;
+                FileSystemInfo fileSystemInfo = selectedItems.First();
+                if (fileSystemInfo is DirectoryInfo)
                 {
-                    string source = MainWindow.directoryListFocused.DirectoryPath;
-                    FileSystemInfo fileSystemInfo = selectedItems.First();
-                    if (fileSystemInfo is DirectoryInfo)
-                    {
-                        MainWindow.directoryListFocused.UpdateDirectoryEntries(Path.Combine(source, fileSystemInfo.Name));
-                    }
-                    else
-                    {
-                        System.Diagnostics.Process.Start(fileSystemInfo.FullName);
-                    }
+                    MainWindow.directoryListFocused.UpdateDirectoryEntries(Path.Combine(source, fileSystemInfo.Name));
                 }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
+                else
+                {
+                    System.Diagnostics.Process.Start(fileSystemInfo.FullName);
+                }
             }
         }
 
         public static void Back()
         {
-            try
+            string directoryPath = MainWindow.directoryListFocused.DirectoryPath;
+            if (directoryPath.Split('\\').Length != 1)
             {
-                string directoryPath = MainWindow.directoryListFocused.DirectoryPath;
-                if (directoryPath.Split('\\').Length != 1)
+                string[] partsOfPath = directoryPath.Split('\\');
+                string newDirectoryPath = partsOfPath[0] + "\\";
+                for (int i = 1; i < partsOfPath.Length - 1; ++i)
                 {
-                    string[] partsOfPath = directoryPath.Split('\\');
-                    string newDirectoryPath = partsOfPath[0] + "\\";
-                    for (int i = 1; i < partsOfPath.Length - 1; ++i)
-                    {
-                        newDirectoryPath = Path.Combine(newDirectoryPath, partsOfPath[i]);
-                    }
-
-                    MainWindow.directoryListFocused.UpdateDirectoryEntries(newDirectoryPath);
+                    newDirectoryPath = Path.Combine(newDirectoryPath, partsOfPath[i]);
                 }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
+
+                MainWindow.directoryListFocused.UpdateDirectoryEntries(newDirectoryPath);
             }
         }
 
         public static void Properties(object obj = null)
         {
-            string errorMessage = string.Empty;
+            List<Exception> exceptions = new List<Exception>();
 
             List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
             long size = 0;
             foreach (var selectedItem in selectedItems)
             {
-                try
+                if (selectedItem is DirectoryInfo)
                 {
-                    if (selectedItem is DirectoryInfo)
-                    {
-                        size += CoreFunctions.DirectoryProperties((DirectoryInfo)selectedItem);
-                    }
-                    else
-                    {
-                        size += CoreFunctions.FileProperties((FileInfo)selectedItem);
-                    }
+                    size += CoreFunctions.DirectoryProperties((DirectoryInfo)selectedItem, exceptions);
                 }
-                catch (Exception e)
+                else
                 {
-                    errorMessage += "\n" + e.Message;
+                    size += CoreFunctions.FileProperties((FileInfo)selectedItem, exceptions);
                 }
             }
 
             double MB = size / 1024.0 / 1024.0;
             MessageBox.Show("Size of selected files and folders is: " + Math.Round(MB, 3) + " MB");
 
-            if (!errorMessage.Equals(string.Empty))
+            ShowExceptions(exceptions);
+        }
+
+        private static void ShowExceptions(List<Exception> exceptions)
+        {
+            if (exceptions.Count > 0)
             {
+                string errorMessage = string.Join(Environment.NewLine, exceptions.Select(x => x.Message));
                 MessageBox.Show(errorMessage);
             }
         }

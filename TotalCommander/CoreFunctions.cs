@@ -8,76 +8,133 @@ using System.Windows;
 
 namespace TotalCommander
 {
-    // This class doesn't handle exceptions!
     class CoreFunctions
     {
-        public static void FileCopy(string source, string target)
+        public static void FileCopy(string source, string target, List<Exception> exceptions)
         {
-            File.Copy(source, target);
-        }
-
-        public static void FileMove(string source, string target)
-        {
-            File.Move(source, target);
-        }
-
-        public static void FileDelete(string source)
-        {
-            File.Delete(source);
-        }
-
-        public static long FileProperties(FileInfo file)
-        {
-            return file.Length;
-        }
-
-        public static void DirectoryCopy(string sourceDirectoryPath, string targetDirectoryPath) 
-        {
-            DirectoryInfo dir = new DirectoryInfo(sourceDirectoryPath);
-
-            if (!Directory.Exists(targetDirectoryPath))
+            try
             {
-                Directory.CreateDirectory(targetDirectoryPath);
+                File.Copy(source, target);
             }
-
-            foreach (FileInfo file in dir.GetFiles())
+            catch (Exception e)
             {
-                string target = Path.Combine(targetDirectoryPath, file.Name);
-                FileCopy(file.FullName, target);
-            }
-
-            foreach (DirectoryInfo subdir in dir.GetDirectories())
-            {
-                string target = Path.Combine(targetDirectoryPath, subdir.Name);
-                DirectoryCopy(subdir.FullName, target);
+                exceptions.Add(e);
             }
         }
 
-        public static long DirectoryProperties(DirectoryInfo dir)
+        public static void FileMove(string source, string target, List<Exception> exceptions)
+        {
+            try
+            {
+                File.Move(source, target);
+            }
+            catch (Exception e)
+            {
+                exceptions.Add(e);
+            }
+        }
+
+        public static void FileDelete(string source, List<Exception> exceptions)
+        {
+            try
+            {
+                File.Delete(source);
+            }
+            catch (Exception e)
+            {
+                exceptions.Add(e);
+            }
+        }
+
+        public static long FileProperties(FileInfo file, List<Exception> exceptions)
+        {
+            try
+            {
+                return file.Length;
+            }
+            catch (Exception e)
+            {
+                exceptions.Add(e);
+                return 0;
+            }
+        }
+
+        public static void DirectoryCopy(string sourceDirectoryPath, string targetDirectoryPath, List<Exception> exceptions) 
+        {
+            try
+            {
+                DirectoryInfo dir = new DirectoryInfo(sourceDirectoryPath);
+
+                if (!Directory.Exists(targetDirectoryPath))
+                {
+                    Directory.CreateDirectory(targetDirectoryPath);
+                }
+
+                foreach (FileInfo file in dir.GetFiles())
+                {
+                    string target = Path.Combine(targetDirectoryPath, file.Name);
+                    FileCopy(file.FullName, target, exceptions);
+                }
+
+                foreach (DirectoryInfo subdir in dir.GetDirectories())
+                {
+                    string target = Path.Combine(targetDirectoryPath, subdir.Name);
+                    DirectoryCopy(subdir.FullName, target, exceptions);
+                }
+            }
+            catch (Exception e)
+            {
+                exceptions.Add(e);
+            }
+        }
+
+        public static long DirectoryProperties(DirectoryInfo dir, List<Exception> exceptions)
         {
             long size = 0;
 
-            foreach (FileInfo file in dir.GetFiles())
+            try
             {
-                size += FileProperties(file);
-            }
+                FileInfo[] files = dir.GetFiles();
+                foreach (FileInfo file in files)
+                {
+                    size += FileProperties(file, exceptions);
+                }
 
-            foreach (DirectoryInfo subdir in dir.GetDirectories())
+                foreach (DirectoryInfo subdir in dir.GetDirectories())
+                {
+                    size += DirectoryProperties(subdir, exceptions);
+                }
+            }
+            catch (Exception e)
             {
-                size += DirectoryProperties(subdir);
+                exceptions.Add(e);
             }
 
             return size;
         }
 
-        public static void DirectoryMove(string source, string target)
+        public static void DirectoryMove(string source, string target, List<Exception> exceptions)
         {
-            Directory.Move(source, target);
+            try
+            {
+                Directory.Move(source, target);
+            }
+            catch (Exception e)
+            {
+                exceptions.Add(e);
+            }
         }
 
-        public static void DirectoryDelete(string source)
+        public static void DirectoryDelete(string source, List<Exception> exceptions)
         {
-            Directory.Delete(source, true);
+            try
+            {
+                Directory.Delete(source, true);
+            }
+            catch (Exception e)
+            {
+                exceptions.Add(e);
+            }
         }
     }
 }

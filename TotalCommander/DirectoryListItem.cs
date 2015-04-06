@@ -19,13 +19,13 @@ namespace TotalCommander
             if (isDirectory)
             {
                 FileSystemInfo = new DirectoryInfo(path);
-                ImageSource = IconExtractor.GetIcon(path, true, true);
             }
             else
             {
                 FileSystemInfo = new FileInfo(path);
-                ImageSource = IconExtractor.GetIcon(path, true, false);
             }
+
+            ImageSource = IconExtractor.GetIcon(path, true, isDirectory);
         }
     }
 }
