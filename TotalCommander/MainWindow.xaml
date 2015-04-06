@@ -1,0 +1,39 @@
+﻿<Window x:Class="TotalCommander.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:TotalCommander"
+        Title="Total Commander" Height="500" Width="700"
+        MinWidth="475" MinHeight="450">
+    
+    <Window.DataContext>
+        <local:ButtonsHandlers/>
+    </Window.DataContext>
+    
+    <Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="50" VerticalAlignment="Top">
+            <Button x:Name="buttonCopy" Content="Copy" Command="{Binding Copy}" HorizontalAlignment="Left" Margin="35,15,0,0" VerticalAlignment="Top" Width="75" IsTabStop="False"/>
+            <Button x:Name="buttonMove" Content="Move" Command="{Binding Move}" HorizontalAlignment="Left" Margin="35,15,0,0" VerticalAlignment="Top" Width="75" IsTabStop="False"/>
+            <Button x:Name="buttonDelete" Content="Delete" Command="{Binding Delete}" HorizontalAlignment="Left" Margin="35,15,0,0" VerticalAlignment="Top" Width="75" IsTabStop="False"/>
+            <Button x:Name="buttonProperties" Content="Properties" Command="{Binding Properties}" HorizontalAlignment="Left" Margin="35,15,35,0" VerticalAlignment="Top" Width="75" IsTabStop="False"/>
+        </StackPanel>
+
+        <Grid Margin="0,50,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition MinHeight="30" />
+            </Grid.RowDefinitions>
+
+            <ListView x:Name="listViewLeft" Grid.Column="0" ItemsSource="{Binding}" SelectionMode="Extended" Margin="0,30,0,0"/>
+            <ListView x:Name="listViewRight" Grid.Column="1" ItemsSource="{Binding}" SelectionMode="Extended" Margin="0,30,0,0"/>
+            <Label x:Name="labelDirectoryLeft" Content="{Binding Path=DirectoryPath}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="296" Margin="50,0,0,0"/>
+            <Label x:Name="labelDirectoryRight" Content="{Binding Path=DirectoryPath}" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="296" Margin="50,0,0,0"/>
+            <ComboBox x:Name="comboBoxLeft" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Height="30" SelectedIndex="0" Focusable="False"/>
+            <ComboBox x:Name="comboBoxRight" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Height="30" SelectedIndex="0" Focusable="False"/>
+        </Grid>
+
+
+    </Grid>
+</Window>
