@@ -103,6 +103,10 @@ namespace TotalCommander
                     {
                         MainWindow.directoryListFocused.UpdateDirectoryEntries(Path.Combine(source, fileSystemInfo.Name));
                     }
+                    else
+                    {
+                        System.Diagnostics.Process.Start(fileSystemInfo.FullName);
+                    }
                 }
             }
             catch (Exception e)

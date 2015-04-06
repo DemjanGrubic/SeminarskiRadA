@@ -42,8 +42,8 @@ namespace TotalCommander
             }
 
             // binding
-            listViewLeft.DataContext = directoryViews[0].ShownEntriesName;
-            listViewRight.DataContext = directoryViews[1].ShownEntriesName;
+            listViewLeft.DataContext = directoryViews[0].directoryListItems;
+            listViewRight.DataContext = directoryViews[1].directoryListItems;
 
             labelDirectoryLeft.DataContext = directoryViews[0];
             labelDirectoryRight.DataContext = directoryViews[1];
@@ -96,9 +96,9 @@ namespace TotalCommander
         {
             List<FileSystemInfo> result = new List<FileSystemInfo>();
 
-            foreach (string selectedItem in listViewFocused.SelectedItems)
+            foreach (DirectoryListItem selectedItem in listViewFocused.SelectedItems)
             {
-                FileSystemInfo element = directoryListFocused.FindFileSystemInfoWithName(selectedItem);
+                FileSystemInfo element = directoryListFocused.FindFileSystemInfoWithName(selectedItem.FileSystemInfo.FullName);
                 if (element != null)
                 {
                     result.Add(element);

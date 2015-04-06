@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace TotalCommander
 {
@@ -14,20 +15,7 @@ namespace TotalCommander
     {
         private const string defaultDirectory = @"C:\";
 
-        private List<FileSystemInfo> directoryEntries = new List<FileSystemInfo>();
-        private ObservableCollection<string> shownEntriesNames = new ObservableCollection<string>();
-
-        public List<FileSystemInfo> DirectoryEntries
-        {
-            get { return directoryEntries; }
-            set { directoryEntries = value; }
-        }
-
-        public ObservableCollection<string> ShownEntriesName
-        {
-            get { return shownEntriesNames; }
-            set { shownEntriesNames = value; }
-        }
+        public ObservableCollection<DirectoryListItem> directoryListItems = new ObservableCollection<DirectoryListItem>();
 
         private string directoryPath;
         public string DirectoryPath
@@ -57,45 +45,25 @@ namespace TotalCommander
         {
             DirectoryPath = directoryPath;
 
-            directoryEntries.Clear();
+            directoryListItems.Clear();
             foreach (var folder in Directory.GetDirectories(directoryPath))
             {
-                directoryEntries.Add(new DirectoryInfo(folder));
+                directoryListItems.Add(new DirectoryListItem(folder,true));
             }
 
             foreach (var file in Directory.GetFiles(directoryPath))
             {
-                directoryEntries.Add(new FileInfo(file));
-            }
-
-            // update shown names
-            shownEntriesNames.Clear();
-            foreach (var item in directoryEntries)
-            {
-                if (item is DirectoryInfo)
-                {
-                    shownEntriesNames.Add("[" + item.Name + "]");
-                }
-                else
-                {
-                    shownEntriesNames.Add(item.Name);
-                }
+                directoryListItems.Add(new DirectoryListItem(file, false));
             }
         }
 
         internal FileSystemInfo FindFileSystemInfoWithName(string name)
         {
-            // folder ???!!!
-            if (name.StartsWith("[") && name.EndsWith("]"))
+            foreach (var item in directoryListItems)
             {
-                name = name.Substring(1, name.Length - 2);
-            }
-
-            foreach (var item in directoryEntries)
-            {
-                if (item.Name.Equals(name))
+                if (item.FileSystemInfo.FullName.Equals(name))
                 {
-                    return item;
+                    return item.FileSystemInfo;
                 }
             }
 

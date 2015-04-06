@@ -54,6 +54,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ButtonsHandlers.cs" />
+    <Compile Include="DirectoryListItem.cs" />
+    <Compile Include="IconExtractor.cs" />
     <Compile Include="KeyPressedHandler.cs" />
     <Compile Include="RelayCommand.cs" />
     <Page Include="MainWindow.xaml">
