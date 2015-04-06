@@ -57,19 +57,6 @@ namespace TotalCommander
             }
         }
 
-        internal FileSystemInfo FindFileSystemInfoWithName(string name)
-        {
-            foreach (var item in directoryListItems)
-            {
-                if (item.FileSystemInfo.FullName.Equals(name))
-                {
-                    return item.FileSystemInfo;
-                }
-            }
-
-            return null;
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
