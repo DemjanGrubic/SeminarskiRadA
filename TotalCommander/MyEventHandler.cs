@@ -12,12 +12,14 @@ namespace TotalCommander
     {
         public static void Copy(object obj = null)
         {
-            try
-            {
-                string target = MainWindow.directoryListNotFocused.DirectoryPath;
+            string errorMessage = string.Empty;
 
-                List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
-                foreach (var selectedItem in selectedItems)
+            string target = MainWindow.directoryListNotFocused.DirectoryPath;
+
+            List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
+            foreach (var selectedItem in selectedItems)
+            {
+                try
                 {
                     if (selectedItem is DirectoryInfo)
                     {
@@ -28,21 +30,28 @@ namespace TotalCommander
                         CoreFunctions.FileCopy(selectedItem.FullName, Path.Combine(target, selectedItem.Name));
                     }
                 }
-
-                MainWindow.directoryListNotFocused.Refresh();
+                catch (Exception e)
+                {
+                    errorMessage += "\n" + e.Message;
+                }
             }
-            catch (Exception e)
+
+            MainWindow.directoryListNotFocused.Refresh();
+
+            if (!errorMessage.Equals(string.Empty))
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show(errorMessage);
             }
         }
 
         public static void Delete(object obj = null)
         {
-            try
+            string errorMessage = string.Empty;
+
+            List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
+            foreach (var selectedItem in selectedItems)
             {
-                List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
-                foreach (var selectedItem in selectedItems)
+                try
                 {
                     if (selectedItem is DirectoryInfo)
                     {
@@ -53,23 +62,30 @@ namespace TotalCommander
                         CoreFunctions.FileDelete(selectedItem.FullName);
                     }
                 }
-
-                MainWindow.directoryListFocused.Refresh();
+                catch (Exception e)
+                {
+                    errorMessage += "\n" + e.Message;
+                }
             }
-            catch (Exception e)
+
+            MainWindow.directoryListFocused.Refresh();
+
+            if (!errorMessage.Equals(string.Empty))
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show(errorMessage);
             }
         }
 
         public static void Move(object obj = null)
         {
-            try
-            {
-                string target = MainWindow.directoryListNotFocused.DirectoryPath;
+            string errorMessage = string.Empty;
 
-                List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
-                foreach (var selectedItem in selectedItems)
+            string target = MainWindow.directoryListNotFocused.DirectoryPath;
+
+            List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
+            foreach (var selectedItem in selectedItems)
+            {
+                try
                 {
                     if (selectedItem is DirectoryInfo)
                     {
@@ -80,13 +96,18 @@ namespace TotalCommander
                         CoreFunctions.FileMove(selectedItem.FullName, Path.Combine(target, selectedItem.Name));
                     }
                 }
-
-                MainWindow.directoryListFocused.Refresh();
-                MainWindow.directoryListNotFocused.Refresh();
+                catch (Exception e)
+                {
+                    errorMessage += "\n" + e.Message;
+                }
             }
-            catch (Exception e)
+
+            MainWindow.directoryListFocused.Refresh();
+            MainWindow.directoryListNotFocused.Refresh();
+
+            if (!errorMessage.Equals(string.Empty))
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show(errorMessage);
             }
         }
 
@@ -140,11 +161,13 @@ namespace TotalCommander
 
         public static void Properties(object obj = null)
         {
-            try
+            string errorMessage = string.Empty;
+
+            List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
+            long size = 0;
+            foreach (var selectedItem in selectedItems)
             {
-                List<FileSystemInfo> selectedItems = MainWindow.GetSelectedItems();
-                long size = 0;
-                foreach (var selectedItem in selectedItems)
+                try
                 {
                     if (selectedItem is DirectoryInfo)
                     {
@@ -155,13 +178,18 @@ namespace TotalCommander
                         size += CoreFunctions.FileProperties((FileInfo)selectedItem);
                     }
                 }
-
-                double MB = size / 1024.0 / 1024.0;
-                MessageBox.Show("Size of selected files and folders is: " + Math.Round(MB, 3) + " MB");
+                catch (Exception e)
+                {
+                    errorMessage += "\n" + e.Message;
+                }
             }
-            catch (Exception e)
+
+            double MB = size / 1024.0 / 1024.0;
+            MessageBox.Show("Size of selected files and folders is: " + Math.Round(MB, 3) + " MB");
+
+            if (!errorMessage.Equals(string.Empty))
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show(errorMessage);
             }
         }
     }

@@ -98,11 +98,7 @@ namespace TotalCommander
 
             foreach (DirectoryListItem selectedItem in listViewFocused.SelectedItems)
             {
-                FileSystemInfo element = directoryListFocused.FindFileSystemInfoWithName(selectedItem.FileSystemInfo.FullName);
-                if (element != null)
-                {
-                    result.Add(element);
-                }
+                result.Add(selectedItem.FileSystemInfo);
             }
 
             return result;
