@@ -88,13 +88,21 @@ namespace TotalCommander
             {
                 string source = MainWindow.directoryListFocused.DirectoryPath;
                 FileSystemInfo fileSystemInfo = selectedItems.First();
-                if (fileSystemInfo is DirectoryInfo)
+
+                try
                 {
-                    MainWindow.directoryListFocused.UpdateDirectoryEntries(Path.Combine(source, fileSystemInfo.Name));
+                    if (fileSystemInfo is DirectoryInfo)
+                    {
+                        MainWindow.directoryListFocused.UpdateDirectoryEntries(Path.Combine(source, fileSystemInfo.Name));
+                    }
+                    else
+                    {
+                        System.Diagnostics.Process.Start(fileSystemInfo.FullName);
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    System.Diagnostics.Process.Start(fileSystemInfo.FullName);
+                    ShowExceptions(new List<Exception>(new Exception[] { e }));
                 }
             }
         }
