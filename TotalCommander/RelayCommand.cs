@@ -34,11 +34,5 @@ namespace TotalCommander
             _targetExecuteMethod = executeMethod;
             _targetCanExecuteMethod = canExecuteMethod;
         }
-
-        public RelayCommand(Action<object> executeMethod)
-        {
-            _targetExecuteMethod = executeMethod;
-        }
-
     }
 }
